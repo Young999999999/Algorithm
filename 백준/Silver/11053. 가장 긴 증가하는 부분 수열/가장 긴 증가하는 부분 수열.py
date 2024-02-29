@@ -1,23 +1,28 @@
-import sys
-input= sys.stdin.readline
+# 맨 왼쪽의 T의 값을 바꿔줌  dp[True_INDEX] = new_value
+# 맨 오른쪽값이 F라면 새로운 값 append
 
-n=int(input())
 
-arr = list(map(int, input().split()))
+n = int(input())
+num = list(map(int,input().split()))
+dp=[num[0]]
 
-result=[1]*n
-bigarr=[]
-for i in range(0,n,1): # 나보다 큰 놈들 다 bigarr에 집어 넣고 가장 작은 거 값 골라서 합쳐주면 되겠찌용 ?
-    num=0
-   #print(bigarr)
-    bigarr=[0]
+for i in range(n):
+    cnt = 0
+    last_index = 1e9
+    for j in range(len(dp)-1,-1,-1):
+        if dp[j] >= num[i]:
+           last_index = j
 
-    for j in range(0,i,1): # 나보다 좌측에 있는 놈들
-        if (arr[i]>arr[j]):
-              #젤 작은 인덱스값 = num
-            num=j
-            bigarr.append(result[num])
+    if last_index == 1e9 :
+        dp.append(num[i])
+    else:
+        dp[last_index] = num[i]
 
-    result[i]=max(bigarr) + 1
+print(len(dp))
 
-print(max(result))
+
+
+
+
+
+
