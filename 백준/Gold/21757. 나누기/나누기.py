@@ -12,7 +12,8 @@ dp=[]
 
 if prefixSum[-1] == 0:
     cnt = prefixSum.count(0)
-    print(cnt * (cnt-1) * (cnt-2) // 6)
+    print(cnt * (cnt-1) * (cnt-2) * (cnt-3)// 24)
+
 
 elif prefixSum[-1] % 4 == 0 :
     first = prefixSum[-1] // 4
@@ -30,7 +31,7 @@ elif prefixSum[-1] % 4 == 0 :
             dict[i] += 1
         else:
             dict[i] = dict[i-first] + dict[i]
-       
+
     print(dict[first*4])
 else:
     print(0)
