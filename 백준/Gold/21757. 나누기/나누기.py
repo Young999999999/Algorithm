@@ -11,8 +11,8 @@ prefixSum.pop(0)
 dp=[]
 
 if prefixSum[-1] == 0:
-    cnt = prefixSum.count(0)
-    print(cnt * (cnt-1) * (cnt-2) * (cnt-3)// 24)
+    cnt = prefixSum.count(0) -1
+    print(cnt * (cnt-1) * (cnt-2)  // 6)
 
 
 elif prefixSum[-1] % 4 == 0 :
