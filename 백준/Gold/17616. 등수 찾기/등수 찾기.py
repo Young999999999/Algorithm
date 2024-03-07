@@ -1,6 +1,7 @@
 N,M,X = map(int,input().split())
 import sys
 sys.setrecursionlimit(10**6)
+input = sys.stdin.readline
 
 def DFS(X):
     global outDegree
