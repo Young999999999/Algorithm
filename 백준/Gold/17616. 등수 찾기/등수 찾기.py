@@ -37,9 +37,7 @@ for i in range(M):
     a,b = map(int,input().split())
     graph[a].append(b)
 
-    if candidate[b] :
-        graph2[b].append(a)
-        candidate[a] = True
+    graph2[b].append(a)
 
 DFS(X)
 DFS2(X)
