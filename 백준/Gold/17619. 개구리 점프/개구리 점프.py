@@ -35,13 +35,15 @@ for i in range(1,N+1):
 
 tree.sort(key = lambda x : x[1]) # 통나무의 시작 지점 순으로 정렬
 
+MAXEND = 0
+
 for i in range(N):
     cnum,cs,ce,cy = tree[i]
+    MAXEND = max(ce,MAXEND)
     nnum,ns,ne,ny = tree[i+1]
 
-    if ce >= ns : # union 해야함
+    if MAXEND >= ns : # union 해야함
         merge(cnum,nnum)
-
 
 for i in range(Q):
     a,b = map(int,input().split())
