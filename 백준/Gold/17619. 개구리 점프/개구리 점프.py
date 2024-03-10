@@ -16,13 +16,13 @@ def merge(a,b):
         arr[MAX] = MIN
 
 
-def isUnion(a,b):
-    a=find(a)
-    b=find(b)
-
-    if a==b: # 같은 집합이다. 그러므로 통나무를 건널 수 있다
-        return True
-    return False
+# def isUnion(a,b):
+#     a=find(a)
+#     b=find(b)
+#
+#     if a==b: # 같은 집합이다. 그러므로 통나무를 건널 수 있다
+#         return True
+#     return False
 
 
 arr=[i for i in range(N+1)]
@@ -45,14 +45,17 @@ for i in range(N):
     if MAXEND >= ns : # union 해야함
         merge(cnum,nnum)
 
+for i in range(1,N+1):
+    find(i)
+
+
 for i in range(Q):
     a,b = map(int,input().split())
 
-    if isUnion(a,b):
+    if arr[a] == arr[b]:
         print(1)
     else:
         print(0)
-
 
 
 
