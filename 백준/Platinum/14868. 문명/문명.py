@@ -1,18 +1,15 @@
 import sys
-import time
 from collections import deque
 input = sys.stdin.readline
 
-def find(a) :
-    x= a[0]
-    y= a[1]
+def find(x) :
 
-    if arr[y][x] == [-1,-1] :
-        return [x,y]
+    if arr[x] == -1 :
+        return x
 
-    arr[y][x] = find(arr[y][x])
+    arr[x] = find(arr[x])
 
-    return arr[y][x]
+    return arr[x]
 
 def merge(a,b):
     a = find(a)
@@ -21,22 +18,14 @@ def merge(a,b):
     if a == b:
         return
 
-    tmp = [min(a,b),max(a,b)]
+    if a>b:
+        big = a
+        small = b
+    else:
+        big = b
+        small = a
 
-    arr[tmp[0][1]][tmp[0][0]][0] = tmp[1][0]
-    arr[tmp[0][1]][tmp[0][0]][1] = tmp[1][1]
-
-def isUnion(start):
-
-    dict = {}
-    for i in range(len(start)):
-        parent = find(start[i])
-
-        dict[str(parent)] = 1
-
-    if len(dict) == 1:
-        return True
-    return False
+    arr[big] = small
 
 
 
@@ -44,11 +33,7 @@ def BFS(start):
     global CNT
     q = deque(start)
 
-    for x,y in start:
-        visited[y][x] = True
-
     vector = [[-1,0],[1,0],[0,1],[0,-1]]
-
 
     while q:
         x,y =q.popleft()
@@ -62,64 +47,69 @@ def BFS(start):
                     visited[ny][nx] = True
                     cnt[ny][nx] = cnt[y][x] + 1
                     q.append((nx,ny))
-                    merge([x,y],[nx,ny])
+                    curIDX = y*N+x
+                    nextIDX =ny*N + nx
+
+                    merge(curIDX,nextIDX)
 
                     for dx2,dy2 in vector:
 
                         nnx = nx + dx2
                         nny = ny + dy2
 
-                        if 1 <= nnx <= N and 1 <= nny <= N:
-                            if visited[nny][nnx]  and find([nnx,nny]) != find([nx,ny]):
+                        nnIDX =nny*N +nnx
 
-                                merge([nx,ny],[nnx,nny])
+                        if 1 <= nnx <= N and 1 <= nny <= N:
+                            if visited[nny][nnx]  and find(nnIDX) != find(nextIDX):
+
+                                merge(nextIDX,nnIDX)
                                 CNT -= 1
 
                                 if CNT == 0:
-                                    print(max(list(map(max, cnt))))
+                                    print(cnt[ny][nx])
                                     return
 
 
 N,K = map(int,input().split())
 
 cnt= [[0 for i in range(N+1)] for j in range(N+1)]
-arr = [[ [-1,-1] for i in range(N+1)] for j in range(N+1)]
+arr = [-1] * ((N+1)*(N+1))
 visited = [[False for i in range(N+1)] for j in range(N+1)]
-start = []
+start = [[0,0] for i in range(K)]
 CNT = K-1
 for i in range(K):
     x,y=map(int, input().split())
-
-    start.append([x,y])
+    start[i][0] = x
+    start[i][1] = y
     visited[y][x] = True
 
 
 vector2= [[-1,0],[1,0],[0,1],[0,-1]]
-parent = list(map(find,start))
 
 init_q =deque(start)
 while init_q:
     nx,ny =init_q.popleft()
-
+    curIDX = ny * N + nx
     for dx2, dy2 in vector2:
 
         nnx = nx + dx2
         nny = ny + dy2
 
+        nnIDX = nny*N + nnx
         if 1 <= nnx <= N and 1 <= nny <= N:
             if visited[nny][nnx] :
-                merge([nx, ny], [nnx, nny])
+                merge(curIDX, nnIDX)
 
 
 dict = {}
 for i in start:
-    dict[str(find(i))] = 1
+    idx = i[1]*N + i[0]
+    dict[str(find(idx))] = 1
 
-set_cnt = len(list(dict.keys()))
+set_cnt = len(dict)
 CNT = set_cnt -1
 
-
-if isUnion(start):
+if CNT == 0:
     print(0)
     exit(0)
 
