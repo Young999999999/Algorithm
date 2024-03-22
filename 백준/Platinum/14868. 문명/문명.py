@@ -1,89 +1,126 @@
 import sys
+import time
 from collections import deque
-input= sys.stdin.readline
-q=deque()
-#Union-Find
-def is_union():
-    target_x,target_y=init[0]
-    tmp = find(N * target_y + target_x)
-    for i in init:
-        target_x,target_y = i
-        a = find(N * target_y + target_x)
-        if tmp != a:
-            return False
-    return True
+input = sys.stdin.readline
 
-def find(x):
-    if x == arr[x]:
-        return x
+def find(a) :
+    x= a[0]
+    y= a[1]
 
-    arr[x]=find(arr[x])
-    return arr[x]
+    if arr[y][x] == [-1,-1] :
+        return [x,y]
 
-def merge(a,b): #원소 a,b를 합집합하기
-    a=find(a)
-    b=find(b)
+    arr[y][x] = find(arr[y][x])
 
-    if a==b: #두 원소가 이미 같은 집합내에 있다. 머지 실패
-        return False
+    return arr[y][x]
 
-    if a>b :
-        a,b=b,a
-    arr[b]=a
+def merge(a,b):
+    a = find(a)
+    b = find(b)
 
-def BFS():
+    if a == b:
+        return
+
+    tmp = [min(a,b),max(a,b)]
+
+    arr[tmp[0][1]][tmp[0][0]][0] = tmp[1][0]
+    arr[tmp[0][1]][tmp[0][0]][1] = tmp[1][1]
+
+def isUnion(start):
+
+    dict = {}
+    for i in range(len(start)):
+        parent = find(start[i])
+
+        dict[str(parent)] = 1
+
+    if len(dict) == 1:
+        return True
+    return False
+
+
+
+def BFS(start):
+    global CNT
+    q = deque(start)
+
+    for x,y in start:
+        visited[y][x] = True
+
+    vector = [[-1,0],[1,0],[0,1],[0,-1]]
+
 
     while q:
-        y,x = q.popleft()
-        for i in vector:
-            dy,dx = i
-            next_y = y+dy
-            next_x = x+dx
+        x,y =q.popleft()
 
-            if next_y <0 or next_y == N or next_x <0 or next_x == N : #matrix bound 초과
-                continue
+        for dx,dy in vector:
+            nx = x + dx
+            ny = y + dy
 
-            next_idx = next_y * N + next_x
-            cur_idx = y*N + x
-            merge(cur_idx, next_idx)
+            if 1 <= nx <= N and 1 <= ny <= N :
+                if not visited[ny][nx]:
+                    visited[ny][nx] = True
+                    cnt[ny][nx] = cnt[y][x] + 1
+                    q.append((nx,ny))
+                    merge([x,y],[nx,ny])
 
-            if is_union():
-                print(max(matrix[y][x],matrix[next_y][next_x]))
-                return
+                    for dx2,dy2 in vector:
 
-            if not visited[next_idx]:
-                q.append((next_y,next_x))
-                matrix[next_y][next_x]=matrix[y][x] + 1
-                visited[next_idx] = True
+                        nnx = nx + dx2
+                        nny = ny + dy2
 
+                        if 1 <= nnx <= N and 1 <= nny <= N:
+                            if visited[nny][nnx]  and find([nnx,nny]) != find([nx,ny]):
 
+                                merge([nx,ny],[nnx,nny])
+                                CNT -= 1
+
+                                if CNT == 0:
+                                    print(max(list(map(max, cnt))))
+                                    return
 
 
 N,K = map(int,input().split())
 
-matrix=[[0 for _ in range(N)] for __ in range(N)]
-visited=[False] * (N*N)
-arr = [i for i in range(N*N)]
-vector = [[-1,0],[1,0],[0,-1],[0,1]]
-init =[]
-
-
-
-
+cnt= [[0 for i in range(N+1)] for j in range(N+1)]
+arr = [[ [-1,-1] for i in range(N+1)] for j in range(N+1)]
+visited = [[False for i in range(N+1)] for j in range(N+1)]
+start = []
+CNT = K-1
 for i in range(K):
-    init_x,init_y = map(int,input().split())
+    x,y=map(int, input().split())
 
-    init_x=init_x-1
-    init_y=(N+1-init_y)-1
-    init.append((init_x,init_y))
-    q.append((init_y,init_x)) #이거 방문처리 해줘야함
-    visited[init_y*N+init_x] = True
-    arr[init_y * N +init_x] =init_y *N + init_x
+    start.append([x,y])
+    visited[y][x] = True
 
 
-BFS()
+vector2= [[-1,0],[1,0],[0,1],[0,-1]]
+parent = list(map(find,start))
+
+init_q =deque(start)
+while init_q:
+    nx,ny =init_q.popleft()
+
+    for dx2, dy2 in vector2:
+
+        nnx = nx + dx2
+        nny = ny + dy2
+
+        if 1 <= nnx <= N and 1 <= nny <= N:
+            if visited[nny][nnx] :
+                merge([nx, ny], [nnx, nny])
 
 
+dict = {}
+for i in start:
+    dict[str(find(i))] = 1
+
+set_cnt = len(list(dict.keys()))
+CNT = set_cnt -1
 
 
+if isUnion(start):
+    print(0)
+    exit(0)
 
+BFS(start)
