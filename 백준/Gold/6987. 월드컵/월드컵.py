@@ -1,71 +1,49 @@
-def match(a,b,status,note,depth) :
-
-    if status == 0: #승
-        aIDX = position[a]
-        bIDX = position[b]
-        note[aIDX] += 1
-        note[bIDX+2] += 1
-        if answer[aIDX] < note[aIDX] or answer[bIDX+2] < note[bIDX+2] :
-            return
-
-
-    elif status == 1: #무
-        aIDX = position[a]
-        bIDX = position[b]
-        note[aIDX+1] += 1
-        note[bIDX+1] += 1
-
-        if answer[aIDX+1] < note[aIDX+1] or answer[bIDX+1] < note[bIDX+1] :
-            return
-
-
-
-    elif status == 2:  # 패
-        aIDX = position[a]
-        bIDX = position[b]
-        note[aIDX + 2] += 1
-        note[bIDX] += 1
-
-        if answer[aIDX+2] < note[aIDX+2] or answer[bIDX] < note[bIDX] :
-            return
-
-
-    if depth == 15:
-        result[str(note)] = 1
-        return
-
-    nextA ,nextB = allMatch[depth]
-
-    match(nextA,nextB,0,note[:],depth+1)
-    match(nextA, nextB, 1, note[:], depth + 1)
-    match(nextA, nextB, 2, note[:], depth + 1)
-
-
 result = {}
-team = ['A','B','C','D','E','F']
+team = ['A', 'B', 'C', 'D', 'E', 'F']
 allMatch = []
 
 for i in range(6):
-    for j in range(i+1,6):
-        allMatch.append([team[i],team[j]])
+    for j in range(i + 1, 6):
+        allMatch.append([team[i], team[j]])
 
-position = {}
-position['A'] = 0
-position['B'] = 3
-position['C'] = 6
-position['D'] = 9
-position['E'] = 12
-position['F'] = 15
+position = {'A': 0, 'B': 3, 'C': 6, 'D': 9, 'E': 12, 'F': 15}
 
-for i in range(4):
-    answer = list(map(int,input().split()))
-    note = answer[:]
+def match(depth, note):
+    if depth == 15:
+        result[str(note)] = True
+        return
 
-    match('A', 'B', 0, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 1)
-    match('A', 'B', 1, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 1)
-    match('A', 'B', 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 1)
+    for i in range(len(note)):
+        if note[i] > answer[i]:
+            return
 
-    if result.get(str(answer)) != None :
+    a, b = allMatch[depth]
+    aIDX = position[a]
+    bIDX = position[b]
+
+    # 승
+    note_win = note[:]
+    note_win[aIDX] += 1
+    note_win[bIDX + 2] += 1
+    match(depth + 1, note_win[:])
+
+    # 무
+    note_draw = note[:]
+    note_draw[aIDX + 1] += 1
+    note_draw[bIDX + 1] += 1
+    match(depth + 1, note_draw[:])
+
+    # 패
+    note_lose = note[:]
+    note_lose[aIDX + 2] += 1
+    note_lose[bIDX] += 1
+    match(depth + 1, note_lose[:])
+
+for _ in range(4):
+    answer = list(map(int, input().split()))
+    match(0,[0]*18)
+
+    if str(answer) in result:
         print(1, end=' ')
     else:
-        print(0, end=' ')
+        print(0, end= ' ')
