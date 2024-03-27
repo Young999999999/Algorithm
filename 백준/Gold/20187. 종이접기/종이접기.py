@@ -41,8 +41,10 @@ def convertY(num):
 
 n = int(input())
 opList = input().split()
+opList.reverse()
 matrix = [[int(input())]]
 # print(matrix)
+
 
 for op in opList:
 
