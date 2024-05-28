@@ -1,0 +1,38 @@
+n,X = map(int,input().split())
+sequence = list(map(int,input().split()))
+
+
+l = 0
+r = 0
+SUM = sequence[0]
+cnt = 0
+
+while True:
+
+	if SUM < X:
+			r += 1
+
+			if r == len(sequence):
+					break
+
+			SUM += sequence[r]
+	else:
+			SUM -= sequence[l]
+			l += 1
+
+			if l == len(sequence):
+					break
+
+			
+
+	if SUM == X:
+			cnt += 1
+
+
+
+print(cnt)
+
+
+
+
+
