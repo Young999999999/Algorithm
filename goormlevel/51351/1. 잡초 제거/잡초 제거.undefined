@@ -1,0 +1,70 @@
+# -*- coding: utf-8 -*-
+# UTF-8 encoding when using korean
+import sys
+input = sys.stdin.readline
+
+
+def init(idx,left,right):
+	
+	if left == right :
+		tree[idx] = grass[left]
+		return tree[idx]
+	
+	mid = (left+right) // 2
+	l = init(2*idx,left,mid)
+	r = init(2*idx+1,mid+1,right)
+	tree[idx] = l+r
+	
+	return tree[idx]
+
+
+
+def update(idx,left,right,target,value):
+	if left == target == right:
+		tree[idx] += value
+		return
+	elif left <= target <= right:
+		tree[idx] += value
+	else:
+		return
+	
+	mid = (left+right)//2
+	update(2*idx,left,mid,target,value)
+	update(2*idx+1,mid+1,right,target,value)
+	
+	
+	
+	
+def getSum(idx,left,right,s,e):
+	#print(idx,left,right,s,e)
+	if e < left or right < s:
+		return 0
+	
+	elif s <= left <= right <= e :
+		return tree[idx]
+	
+	else: # 영역에 걸친다면
+		mid = (left+right) // 2
+		
+		l = getSum(2*idx,left,mid,s,e)
+		r = getSum(2*idx+1,mid+1,right,s,e)
+		
+		return l+r
+		
+n,q = map(int,input().split())
+grass = list(map(int,input().split()))
+tree= [0] * (4*n)
+init(1,0,n-1)
+
+for i in range(q):
+	query,s,e = map(int,input().split())
+	
+	if query == 1:
+		print(getSum(1,0,n-1,s-1,e-1))
+	elif query == 2:
+		update(1,0,n-1,s-1,e)
+	elif query == 3:
+		update(1,0,n-1,s-1,-e)
+
+
+	
