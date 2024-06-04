@@ -2,38 +2,37 @@
 # UTF-8 encoding when using korean
 import sys
 import heapq
-input= sys.stdin.readline
+input = sys.stdin.readline
 
-
-N,M = map(int,input().split())
 
 INF = int(1e9)
-dist = [INF]*(N+1)
-dist[1] = 0
-graph =[[] for i in range(N+1)]
 
+N,M = map(int,input().split())
+graph = [[] for i in range(N+1)]
 for i in range(M):
 	s,e,c = map(int,input().split())
-	graph[s].append([e,c])
+	graph[s].append((e,c))
+	
+	
+q=[[0,1]]	
+dist =[INF] *(N+1)
+dist[1] = 0 #출발지
 
 def dijkstra():
-	q=[]
-	heapq.heappush(q,(0,1))
-
+	
 	while q:
-		c,s = heapq.heappop(q)
+		cost,mid = heapq.heappop(q)
 		
-		if dist[s] < c:
+		if cost > dist[mid]:
 			continue
 		
-		for end,cost in graph[s]:
-			if dist[end] > dist[s] + cost:
-				dist[end] = dist[s] + cost
-				heapq.heappush(q,(dist[end],end))
-			
+		for end,d in graph[mid]:
+			if dist[end] > dist[mid] + d :
+				dist[end] = dist[mid] + d
+				heapq.heappush(q,[dist[end],end])
+				
 dijkstra()
-
-if dist[N] == INF :
+if dist[N] == INF:
 	print("go home")
 else:
 	print(dist[N])
