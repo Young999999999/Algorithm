@@ -1,0 +1,61 @@
+# -*- coding: utf-8 -*-
+# UTF-8 encoding when using korean
+from collections import deque
+import sys
+
+input =sys.stdin.readline
+
+R,C = map(int,input().split())
+matrix = []
+visited= [[False for i in range(C)] for j in range(R)]
+cnt= [[0 for i in range(C)] for j in range(R)]
+vector =[[-1,0],[1,0],[0,-1],[0,1]]
+
+wall = '#'
+route = '.'
+fire = '@'
+wonjune = '&'
+
+for i in range(R):
+	matrix.append(list(input()))
+	
+f= []
+
+for i in range(R):
+	for j in range(C):
+		if fire == matrix[i][j]:
+			f.append([j,i])
+			visited[i][j] = True
+			
+			
+q = deque(f)
+
+def BFS():
+	
+	while q:
+		x,y=q.popleft()
+		
+		for dx,dy in vector:
+			nx = x + dx
+			ny = y + dy
+			
+			if -1< nx < C and -1 < ny < R :
+				if not visited[ny][nx] and not matrix[ny][nx] == wall:
+					q.append([nx,ny])
+					visited[ny][nx] = True
+					cnt[ny][nx] = cnt[y][x] + 1
+					
+					if matrix[ny][nx] == wonjune :
+						print(cnt[y][x])
+						visited[y][x]
+						exit(0)
+					
+					
+	
+	
+BFS()
+print(-1)
+	
+	
+	
+	
