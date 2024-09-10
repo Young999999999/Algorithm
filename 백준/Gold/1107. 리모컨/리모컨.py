@@ -1,34 +1,34 @@
-import sys
-input = sys.stdin.readline
+# ban이 아닌 것 중에 가장 가까운 수 찾기
+def judge(x):
+    if x in ban:
+        return True
+    return False
 
-#리모컨 숫자를 조합하는 경우의 수 3
-#i) 그냥 100에서 +,-만 딸깎 딸깍
-#ii) 0~9버튼만 사용
-#iii) 0~9 버튼사용 후 +,- 딸깍 딸깎
-# 이 세가지중 최소 값
-N = input().strip()
-M  =int(input())
-b = list(map(str,input().split()))
-ban = {}
-
-for i in b :
-    ban[str(i)] ='hi'
-
-cnt = 100000000000000
-
+n = int(input())
+k = int(input())
+if k == 0:
+    print(min(len(str(n)),abs(n-100)))
+    exit(0)
+ban = list(map(int,input().split()))
+MIN = abs(n-100)
+targetNum = list(str(n))
 for i in range(1000001):
-    judge = str(i)
+    candidateNum = list(str(i))
     bit = 0
-    for j in judge:  #고장난 버튼이 있는지 확인
-        if ban.get(j) != None:
+    for j in candidateNum:
+        if judge(int(j)):
             bit = 1
             break
+    if bit == 1:
+        continue
+    cnt = abs(i-n)
+    MIN = min(MIN,cnt + len(str(i)))
+
+print(MIN)
 
 
 
-    if bit == 0: #고장나지 않았다면
-        cnt = min(cnt,len(str(i))+abs(int(N)-i))
 
-#그냥 100에서 딸깍 딸깍
-cnt =  min(cnt,abs(int(N)-100))
-print(cnt)
+
+
+
