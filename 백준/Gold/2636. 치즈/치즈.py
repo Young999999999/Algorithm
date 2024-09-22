@@ -10,16 +10,7 @@ def getCheese():
 
     return cnt
 
-
-
-
 def bfs():
-
-    # deep copy
-    tmp = []
-    for i in matrix:
-        tmp.append(i[:])
-
 
     q= deque()
     q.append((0,0))
@@ -41,16 +32,9 @@ def bfs():
                     q.append((nx,ny))
                     visited[ny][nx] = True
 
-                if matrix[ny][nx] == 1 : #치즈라면 녹여뿌
-                    tmp[ny][nx] = 0 #큐에 삽입하지는 않는다.
-
-    return tmp
-
-
-
-
-
-
+                if matrix[ny][nx] == 1 : #치즈라면 녹인다
+                    matrix[ny][nx] = 0 #큐에 삽입하지는 않는다.
+                    visited[ny][nx] = True
 
 
 h,w = map(int,input().split())
@@ -69,7 +53,7 @@ while True:
         break
 
     prev = cheese
-    matrix=bfs()
+    bfs()
     cnt += 1
 
 print(cnt)
