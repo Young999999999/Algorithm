@@ -1,39 +1,18 @@
-A = input()
-B = input()
-dp =[0] * 1001
-trace=[i for i in range(1001)]
 
-path = []
-def getPath(node,cnt):
-    if cnt == 0:
-        return
-    path.append(B[node])
+str1 = input()
+str2 = input()
 
-    getPath(trace[node],cnt-1)
+dp=[0]*len(str2)
+cost = [0]*len(str2)
 
-for i in range(len(A)):
+for i in range(len(str1)):
+    for j in range(len(str2)-1,-1,-1):
+        if str1[i] == str2[j]:
+            dp[j] = cost[j] + 1
+
     MAX = 0
-    idx = 0
-    for j in range(len(B)):
-        # 내가 갱신한 것이 아니라 남이 갱신 한 거라면 MAX 카운트를 바꿔준다.
-        if A[i] == B[j]:
-            if dp[j] > MAX:
-                MAX = dp[j]
-                idx = j
-            else:
-                dp[j] = MAX+1
-                trace[j] = idx
-        else:
-            if MAX < dp[j]:
-                MAX = dp[j]
-                idx = j
+    for j in range(len(str2)):
+        cost[j] = MAX
+        MAX = max(dp[j],MAX)
 
-result = 0
-idx = 0
-for i in range(1001):
-    if result < dp[i]:
-        result = dp[i]
-        idx = i
-
-print(result)
-getPath(idx,result)
+print(max(dp))
