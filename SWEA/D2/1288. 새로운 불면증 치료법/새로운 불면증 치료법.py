@@ -38,29 +38,22 @@ print(f)                                문자열 1개 출력하는 예제
 #sys.stdin = open("input.txt", "r")
 
 n = int(input())
-def judge(l):
-    if sum(l) != 10:
-        return True
-    return False
-
-def mask(num):
-    while num:
-        idx = num % 10
-        l[idx] = 1
-        num = num//10
 
 for i in range(n):
-    a = int(input())
-    l = [0] * 10
-    num = a
+    num = int(input())
+    mask = 0
+    bit = 0
 
-    mask(num)
-    if not judge(l):
-        print("#{} {}".format(i + 1, num))
-        continue
+    for j in range(1,100000):
+        a = num * j
 
-    while judge(l):
-        mask(num)
-        num += a
+        while a:
+            idx = a % 10
+            a = a//10
+            mask = mask | (1 << idx)
 
-    print("#{} {}".format(i+1,num-a))
+        if mask == (1<<10)-1:
+            break
+
+
+    print("#{} {}".format(i+1,num*j))
