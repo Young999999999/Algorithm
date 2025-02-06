@@ -1,34 +1,73 @@
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Queue;
+
+//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
 
 class Solution {
+    ArrayDeque<int[]> q = new ArrayDeque<>();
+    int bridge_length;
+    int weight;
+    int answer;
+    int sum;
+    int time = 0;
+    int[] insertTime;
+
     public int solution(int bridge_length, int weight, int[] truck_weights) {
-            Stack<Integer> truckStack = new Stack<>();
-            Map<Integer, Integer> bridgeMap = new HashMap<>();
 
-            for (int i = truck_weights.length-1; i >= 0; i--)
-                truckStack.push(truck_weights[i]);
+//         bridge_length = 10;
+//         weight = 100;
+//         truck_weights = new int[]{50, 30, 10, 10, 30, 10, 40};
+      
+        this.bridge_length =bridge_length;
+        this.weight = weight;
+        insertTime = new int[truck_weights.length];
+        int idx =0 ;
+        for (int t : truck_weights){
 
-            int answer = 0;
-            int sum = 0;
-            while(true) {
-                answer++;
+            addTruck(t,idx++);
 
-                if (bridgeMap.containsKey(answer))
-                    bridgeMap.remove(answer);
+        }
 
-                sum = bridgeMap.values().stream().mapToInt(Number::intValue).sum();
-
-                if (!truckStack.isEmpty())
-                    if (sum + truckStack.peek() <= weight)
-                        bridgeMap.put(answer + bridge_length, truckStack.pop());
-
-                if (bridgeMap.isEmpty() && truckStack.isEmpty())
-                    break;
+        return insertTime[idx-1] + bridge_length;
+    }
 
 
+    private void addTruck(int t,int idx){
+
+        //단순 append
+        int[] node = {t,idx};
+        time++;
+        
+        if (sum + t <=weight){
+            
+            if (!q.isEmpty()){
+                int[] p = q.poll();
+                sum-=p[0];
+                if(insertTime[p[1]] +bridge_length > time){
+                    q.addFirst(p);
+                    sum+=p[0];
+                }
             }
-            return answer;
+            
+            q.add(node);
+            insertTime[idx] = time;
+            sum += t;
+            
+        } else {
+
+            while(sum+t > weight){
+                int[] pollNode = q.poll();
+                sum -= pollNode[0];
+                time = insertTime[pollNode[1]] + bridge_length ;
+            }
+
+            q.add(node);
+            insertTime[idx] = time;
+            sum += t;  
+        }        
     }
 }
+
