@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,12 +18,12 @@ class Edge{
 
 class Node {
     int e;
-    int dist;
+    long dist;
 
     int cost;
 
     int preCost;
-    public Node(int e, int dist, int cost, int preCost) {
+    public Node(int e, long dist, int cost, int preCost) {
         this.e = e;
         this.dist = dist;
         this.cost = cost;
@@ -47,10 +48,10 @@ public class Main {
     static List<Node> miniDijkstra(int s,int preCost) {
 
         List<Node> nodes = new ArrayList<>();
-        PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingInt(o -> o.dist));
+        PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> Long.compare(o1.dist, o2.dist));
         pq.offer(new Node(s,0,cost[s],cost[s]));
-        int[] distance = new int[n];
-        Arrays.fill(distance,Integer.MAX_VALUE);
+        long [] distance = new long[n];
+        Arrays.fill(distance,Long.MAX_VALUE);
         distance[s] = 0;
 
         while (!pq.isEmpty()) {
@@ -102,10 +103,10 @@ public class Main {
             graph[e-1].add(new Edge(e-1,s-1,c));
         }
 
-        PriorityQueue<Node> pq = new PriorityQueue<>((o1,o2) -> o1.dist-o2.dist);
-        pq.offer(new Node(0,0,cost[0],2500));
-        int[] distance = new int[n];
-        Arrays.fill(distance,Integer.MAX_VALUE);
+        PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> Long.compare(o1.dist, o2.dist));
+        pq.offer(new Node(0,0,cost[0],2501));
+        long[] distance = new long[n];
+        Arrays.fill(distance,Long.MAX_VALUE);
         distance[0] = 0;
 
         while(!pq.isEmpty()){
@@ -117,7 +118,6 @@ public class Main {
             }
 
             if (now.dist > distance[now.e]) continue;
-
             //미니 다익 돌려
             if (now.preCost > now.cost){
                 List<Node> nodes = miniDijkstra(now.e,now.cost);
@@ -133,8 +133,8 @@ public class Main {
             else{
                 for(Edge node : graph[now.e]){
                     if(distance[node.e] > now.preCost * node.dist + now.dist){
-                        distance[node.e] = now.preCost * node.dist + now.dist;
-                        pq.offer(new Node(node.e,now.preCost*node.dist + now.dist,now.preCost,now.preCost));
+                        distance[node.e] = (long)now.preCost * node.dist + now.dist;
+                        pq.offer(new Node(node.e,now.preCost*node.dist + now.dist,cost[now.e],now.preCost));
                     }
                 }
             }
