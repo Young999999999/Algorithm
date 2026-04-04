@@ -1,53 +1,40 @@
-import sys
-sys.setrecursionlimit(int(1e7))
-input = sys.stdin.readline
+from collections import deque
 
-def isIndegreeZero():
-    idx = []
-    for i in range(n):
-        if indegree[i] == 0:
-            idx.append(i)
-            indegree[i] = -1
-
-    return idx
-def dfs(cur,t):
-    t += time[cur-1]
-
-    arrive[cur] = max(t,arrive[cur])
-
-    for next in graph[cur]:
-        arrive[next] = max(arrive[next], arrive[cur]+ time[next - 1])
-        indegree[next-1] -= 1
-        if indegree[next-1] == 0 :
-            dfs(next,t)
-
-T = int(input())
-
-for i in range(T):
+t = int(input())
+for _ in range(t):
     n,k = map(int,input().split())
     time = list(map(int,input().split()))
-    arrive=[0] * (n+1)
-    indegree = [0] * n
-    graph=[[] for i in range(n+1)]
-    pre= []
-    for i in range(k):
+    time.insert(0,0)
+    graph = [[] for i in range(n+1)]
+    indegree = [0] * (n+1)
+    q = deque()
+
+    for __ in range(k):
         x,y = map(int,input().split())
-        indegree[y-1] += 1
+        indegree[y] += 1
         graph[x].append(y)
 
-    w = int(input())
+    cost = [0] * (n + 1)
 
-    start = isIndegreeZero()
+    for i in range(1,n+1):
+        if indegree[i] == 0:
+            q.append(i)
+            cost[i] = time[i]
 
-    for i in start:
-        dfs(i+1,0)
+    while q:
+        now = q.popleft()
+        c = cost[now]
 
-    for s in range(1,n+1):
-        for e in graph[s]:
-            if e==w:
-                pre.append(s)
-                break
-    
-    print(arrive[w])
+        for next in graph[now]:
+            indegree[next] -= 1
+
+            cost[next] = max(cost[next], time[next] + c)
+            if indegree[next] == 0:
+                q.append(next)
+
+    target = int(input())
+    print(cost[target])
+
+
 
 
