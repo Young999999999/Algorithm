@@ -1,18 +1,15 @@
 def solution(phone_book):
-    answer = True
+    answer= True
+    map = [set() for i in range(21)]
     
-    hash = {}
-    for i in range(1,21):
-        hash[i] = {}
         
-    for num in phone_book:
-        hash[len(num)][num] = 1
+    for i in phone_book:
+        map[len(i)].add(i)
     
-    for check in phone_book:
-        for i in range(1,len(check)):
-            if hash[i].get(check[:i]) != None:
-                return False
-            
+    for i in range(len(phone_book)):
+        for j in range(1,len(phone_book[i])):
+            str = phone_book[i][:j]
+            if str in map[j]:
+                answer=False
         
-    
     return answer
